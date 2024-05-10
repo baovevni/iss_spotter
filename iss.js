@@ -16,9 +16,9 @@ const fetchMyIP = function(callback) {
       return callback(error, null);
     }
     if (response.statusCode !== 200) {
-      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
-      return callback(Error(msg), null);
-    } else
+      const message = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      return callback(message, null);
+    } 
       return callback(null, body.ip);
   });
 };
@@ -35,8 +35,14 @@ const fetchCoordsByIP = function(ip, callback) {
 
     if (response.statusCode === 200 && body.success === false) {
       const message = `Success status was ${body.success}. Server message says: ${body.message} when fetching for IP ${body.ip}`;
-      return callback(Error(message), null);
+      return callback(message, null);
     }
+
+    if (response.statusCode !== 200) {
+      const message = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      return callback(message, null);
+    } 
+
     return callback(null, {latitude, longitude});
   });
 };
