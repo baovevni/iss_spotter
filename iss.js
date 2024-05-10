@@ -12,37 +12,39 @@ const needle = require('needle');
 
 const fetchMyIP = function(callback) {
   needle.get(`https://api.ipify.org/?format=json`, (error, response, body) => {
+
     if (error) {
       return callback(error, null);
     }
+
     if (response.statusCode !== 200) {
       const message = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       return callback(message, null);
     } 
+    
       return callback(null, body.ip);
   });
 };
 
 const fetchCoordsByIP = function(ip, callback) {
   needle.get(`http://ipwho.is/${ip}`, (error, response, body) => {
-
-    let latitude = body.latitude;
-    let longitude = body.longitude;
-
+    
     if (error) {
       return callback(error, null);
     }
-
+    
     if (response.statusCode === 200 && body.success === false) {
       const message = `Success status was ${body.success}. Server message says: ${body.message} when fetching for IP ${body.ip}`;
       return callback(message, null);
     }
-
+    
     if (response.statusCode !== 200) {
       const message = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       return callback(message, null);
     } 
-
+    
+    const latitude = body.latitude;
+    const longitude = body.longitude;
     return callback(null, {latitude, longitude});
   });
 };
