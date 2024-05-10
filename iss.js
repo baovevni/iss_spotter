@@ -20,9 +20,9 @@ const fetchMyIP = function(callback) {
     if (response.statusCode !== 200) {
       const message = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       return callback(message, null);
-    } 
-    
-      return callback(null, body.ip);
+    }
+
+    return callback(null, body.ip);
   });
 };
 
@@ -41,7 +41,7 @@ const fetchCoordsByIP = function(ip, callback) {
     if (response.statusCode !== 200) {
       const message = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       return callback(message, null);
-    } 
+    }
     
     const latitude = body.latitude;
     const longitude = body.longitude;
@@ -49,4 +49,21 @@ const fetchCoordsByIP = function(ip, callback) {
   });
 };
 
-module.exports = { fetchMyIP, fetchCoordsByIP };
+const fetchISSFlyOverTimes = function(coords, callback) {
+  needle.get(`https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
+    
+    if (error) {
+      return callback(error, null);
+    }
+    
+    if (response.statusCode !== 200) {
+      const message = `Status Code ${response.statusCode} when fetching ISS flyover. Response: ${body}`;
+      return callback(message, null);
+    }
+    
+    const passes = body.response;
+    return callback(null, passes);
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
